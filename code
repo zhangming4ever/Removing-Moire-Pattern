@@ -1,0 +1,67 @@
+close all
+ img=img1;
+[M, N] = size(img);
+P = 2 * M;
+Q = 2 * N;
+% uk2=50;vk2=100;
+% uk2=-70;vk2=100;
+uk1=20;vk1=30;
+uk2=-30;vk2=20;
+ 
+% uk3=-99;vk3=90;
+uk3=-120;vk3=90;
+uk4=120;vk4=90;
+uk5=65;vk5=60;
+uk6=60;vk6=60;
+uk7=-60;vk7=60;
+% uk3=-99;vk3=90;
+uk3=-98;vk3=86;
+uk4=98;vk4=86;
+alf =15;
+alf2=9;
+alf3=6;
+H = zeros(M, N);
+for i = 1:M
+    for j = 1:N
+%         H1(i, j) = exp(-((i-P/2-uk)^2 + (j-Q/2-vk)^2) / (2 * alf^2));
+%         H2(i, j) = exp(-((i-P/2+uk)^2 + (j-Q/2+vk)^2) / (2 * alf^2));
+        H1(i,j)=(1-exp(-((i-M/2-uk1)^2 + (j-N/2-vk1)^2) / (2 * alf^2))).*(1-exp(-((i-N/2+uk1)^2 + (j-N/2+vk1)^2) / (2 * alf^2)));
+        H2(i,j)=(1-exp(-((i-M/2-uk2)^2 + (j-N/2-vk2)^2) / (2 * alf^2))).*(1-exp(-((i-M/2+uk2)^2 + (j-N/2+vk2)^2) / (2 * alf^2)));
+       H3(i,j)=(1-exp(-((i-M/2-uk3)^2 + (j-N/2-vk3)^2) / (2 * alf2^2))).*(1-exp(-((i-N/2+uk3)^2 + (j-N/2+vk3)^2) / (2 * alf2^2)));
+       H4(i,j)=(1-exp(-((i-M/2-uk4)^2 + (j-N/2-vk4)^2) / (2 * alf2^2))).*(1-exp(-((i-N/2+uk4)^2 + (j-N/2+vk4)^2) / (2 * alf2^2)));
+       H5(i,j)=(1-exp(-((i-M/2-uk5)^2 + (j-N/2-vk5)^2) / (2 * alf3^3))).*(1-exp(-((i-N/2+uk5)^2 + (j-N/2+vk5)^2) / (2 * alf3^3)));
+       H6(i,j)=(1-exp(-((i-M/2-uk6)^2 + (j-N/2-vk6)^2) / (2 * alf^2))).*(1-exp(-((i-N/2+uk6)^2 + (j-N/2+vk6)^2) / (2 * alf^2)));
+       H7(i,j)=(1-exp(-((i-M/2-uk7)^2 + (j-N/2-vk7)^2) / (2 * alf^2))).*(1-exp(-((i-N/2+uk7)^2 + (j-N/2+vk7)^2) / (2 * alf^2)));
+        H(i,j)=H1(i,j).*H2(i,j).*H3(i,j).*H4(i,j).*H5(i,j);
+%     .*H2(i,j).*H3(i,j).*H4(i,j).*H5(i,j).*H6(i,j).*H3(i,j).*H4(i,j).*H5(i,j).*H6(i,j).*H7(i,j)
+    end
+end
+%%%%%%%%%%%%%%
+% img_fp = zeros(P, Q);
+% img_fp(1:M, 1:N) = img(1:M, 1:N);
+%
+F2=fft2(img);
+F3=fftshift(F2);
+F5=F3/max(max(F3))*255;
+F4=log(1+abs(F3));
+figure(1)
+imshow(F4,[]);
+title('原图的频谱');
+%%%%%%%%%%%%%%%%%%%%%
+figure(2)
+imshow((fftshift(H)),[]);
+title('滤波函数');
+%%%%%%%%%%%%%%%%%%%%%
+figure(3)
+imshow(F4.*log(fftshift(H)+1),[]);
+title('滤波函数与原图的频谱的乘积');
+% 
+% rasult1=real(ifft(F4.*fftshift(H)));
+rasult1=dftfilt(img,H);
+figure(4)
+imshow(rasult1,[])
+title('滤波后图像');
+ 
+figure(5)
+imshow(img,[])
+title('原图');
